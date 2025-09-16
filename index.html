@@ -62,7 +62,7 @@
             width: 100%;
             flex-shrink: 0;
             position: relative;
-            height: 240px;
+            height: 280px;
             display: flex;
             align-items: center;
             padding: 2rem;
@@ -1071,6 +1071,14 @@
                 negocioActual = null;
                 vistaActual = 'deliverys';
                 categoriaActual = 'todas';
+                
+                // Mostrar vista de deliverys y ocultar otras
+                document.getElementById('vista-deliverys').classList.remove('hidden');
+                document.getElementById('seccion-promociones').classList.add('hidden');
+                document.getElementById('seccion-filtros').classList.add('hidden');
+                document.getElementById('negocios-container').classList.add('hidden');
+                document.getElementById('productos-container').classList.add('hidden');
+                
                 renderizarDeliverys();
             }
         }
@@ -1476,10 +1484,10 @@
                 redesSociales.innerHTML = '';
                 
                 const redes = [
-                    { nombre: 'Facebook', icono: '📘', url: entidad.facebook_url },
-                    { nombre: 'Instagram', icono: '📷', url: entidad.instagram_url },
-                    { nombre: 'Twitter', icono: '🐦', url: entidad.twitter_url },
-                    { nombre: 'TikTok', icono: '🎵', url: entidad.tiktok_url }
+                    { nombre: 'Facebook', icono: '🔵', url: entidad.facebook_url },
+                    { nombre: 'Instagram', icono: '🟣', url: entidad.instagram_url },
+                    { nombre: 'Twitter', icono: '🔷', url: entidad.twitter_url },
+                    { nombre: 'TikTok', icono: '⚫', url: entidad.tiktok_url }
                 ];
                 
                 redes.forEach(red => {
@@ -1499,9 +1507,9 @@
                 // Si no hay redes sociales, mostrar las de RMPOS por defecto
                 if (redesSociales.children.length === 0 && datosAdmin) {
                     const redesDefault = [
-                        { nombre: 'Facebook', icono: '📘', url: datosAdmin.facebook_url },
-                        { nombre: 'Instagram', icono: '📷', url: datosAdmin.instagram_url },
-                        { nombre: 'TikTok', icono: '🎵', url: datosAdmin.tiktok_url }
+                        { nombre: 'Facebook', icono: '🔵', url: datosAdmin.facebook_url },
+                        { nombre: 'Instagram', icono: '🟣', url: datosAdmin.instagram_url },
+                        { nombre: 'TikTok', icono: '⚫', url: datosAdmin.tiktok_url }
                     ];
                     
                     redesDefault.forEach(red => {
@@ -1809,9 +1817,177 @@
         }
 
         function abrirModalOpciones(nombre, precioBase, cantidad, quantityId) {
-            // Implementación simplificada del modal de opciones
-            // (mantener la lógica existente pero con los nuevos estilos)
-            agregarAlCarritoDirecto(nombre, precioBase, cantidad, quantityId);
+            const opciones = window.productosOpciones[nombre];
+            if (!opciones) {
+                agregarAlCarritoDirecto(nombre, precioBase, cantidad, quantityId);
+                return;
+            }
+            
+            // Crear modal de opciones
+            const modal = document.createElement('div');
+            modal.id = 'modal-opciones';
+            modal.className = 'modal';
+            
+            let opcionesHTML = '';
+            let tiposOpciones = Object.keys(opciones);
+            
+            tiposOpciones.forEach(tipoOpcion => {
+                const config = opciones[tipoOpcion].configuracion;
+                const opcionesTipo = opciones[tipoOpcion].opciones;
+                
+                opcionesHTML += `
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="font-weight: 600; margin-bottom: 0.75rem; color: #374151;">
+                            ${config.titulo} ${config.obligatorio ? '*' : ''}
+                        </h4>
+                        <div style="display: grid; gap: 0.5rem;">
+                `;
+                
+                opcionesTipo.forEach((opcion, index) => {
+                    const inputType = config.multiple ? 'checkbox' : 'radio';
+                    const inputName = config.multiple ? `opcion-${tipoOpcion}` : `opcion-${tipoOpcion}`;
+                    const inputId = `${inputName}-${index}`;
+                    
+                    opcionesHTML += `
+                        <label style="display: flex; align-items: center; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.5rem; cursor: pointer; transition: all 0.3s ease;" 
+                               onmouseover="this.style.backgroundColor='#f3f4f6'" 
+                               onmouseout="this.style.backgroundColor='white'">
+                            <input type="${inputType}" name="${inputName}" value="${opcion.nombre}" 
+                                   data-precio="${opcion.precio}" id="${inputId}"
+                                   style="margin-right: 0.75rem;" 
+                                   onchange="actualizarPrecioModal('${nombre}', ${precioBase}, ${cantidad})">
+                            <div style="flex: 1;">
+                                <span style="font-weight: 500;">${opcion.nombre}</span>
+                                ${opcion.precio > 0 ? `<span style="color: #16a34a; font-weight: 600; margin-left: 0.5rem;">+LPS. ${opcion.precio.toFixed(2)}</span>` : ''}
+                            </div>
+                        </label>
+                    `;
+                });
+                
+                opcionesHTML += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 28rem;">
+                    <div class="modal-header">
+                        <h3 class="text-lg font-bold">🍽️ Personalizar: ${nombre}</h3>
+                        <button onclick="cerrarModalOpciones()" class="text-white hover:text-gray-200 text-2xl font-bold">&times;</button>
+                    </div>
+                    <div style="padding: 1.5rem; max-height: 60vh; overflow-y: auto;">
+                        ${opcionesHTML}
+                        <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                            <div class="flex justify-between items-center mb-4">
+                                <span style="font-weight: 600;">Cantidad:</span>
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="cambiarCantidadModal(-1)" style="background: #d1d5db; color: #374151; width: 2rem; height: 2rem; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer;">-</button>
+                                    <span id="cantidad-modal" style="font-weight: 600; min-width: 2rem; text-align: center;">${cantidad}</span>
+                                    <button onclick="cambiarCantidadModal(1)" style="background: #d1d5db; color: #374151; width: 2rem; height: 2rem; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer;">+</button>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center mb-4">
+                                <span style="font-weight: 600; font-size: 1.125rem;">Total:</span>
+                                <span id="precio-total-modal" style="font-weight: 700; font-size: 1.25rem; color: #dc2626;">LPS. ${(precioBase * cantidad).toFixed(2)}</span>
+                            </div>
+                            <button onclick="confirmarOpcionesYAgregar('${nombre}', ${precioBase}, '${quantityId}')" 
+                                    style="width: 100%; background: #16a34a; color: white; padding: 0.75rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; transition: background 0.3s ease;"
+                                    onmouseover="this.style.backgroundColor='#15803d'"
+                                    onmouseout="this.style.backgroundColor='#16a34a'">
+                                Agregar al Carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function cerrarModalOpciones() {
+            const modal = document.getElementById('modal-opciones');
+            if (modal) {
+                modal.remove();
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        function actualizarPrecioModal(nombre, precioBase, cantidadInicial) {
+            const cantidadActual = parseInt(document.getElementById('cantidad-modal').textContent);
+            let precioTotal = precioBase * cantidadActual;
+            
+            // Sumar precios de opciones seleccionadas
+            const opcionesSeleccionadas = document.querySelectorAll('#modal-opciones input:checked');
+            opcionesSeleccionadas.forEach(opcion => {
+                const precioOpcion = parseFloat(opcion.dataset.precio) || 0;
+                precioTotal += precioOpcion * cantidadActual;
+            });
+            
+            document.getElementById('precio-total-modal').textContent = `LPS. ${precioTotal.toFixed(2)}`;
+        }
+        
+        function cambiarCantidadModal(cambio) {
+            const cantidadElement = document.getElementById('cantidad-modal');
+            let cantidad = parseInt(cantidadElement.textContent) + cambio;
+            if (cantidad < 1) cantidad = 1;
+            cantidadElement.textContent = cantidad;
+            
+            // Actualizar precio
+            const modal = document.getElementById('modal-opciones');
+            const titulo = modal.querySelector('.modal-header h3').textContent;
+            const nombre = titulo.split('Personalizar: ')[1];
+            const precioBase = parseFloat(document.getElementById('precio-total-modal').textContent.split('LPS. ')[1]) / parseInt(cantidadElement.textContent);
+            
+            actualizarPrecioModal(nombre, precioBase, cantidad);
+        }
+        
+        function confirmarOpcionesYAgregar(nombre, precioBase, quantityId) {
+            const cantidadModal = parseInt(document.getElementById('cantidad-modal').textContent);
+            let nombreCompleto = nombre;
+            let precioFinal = precioBase;
+            
+            // Recopilar opciones seleccionadas
+            const opcionesSeleccionadas = document.querySelectorAll('#modal-opciones input:checked');
+            const opcionesTexto = [];
+            
+            opcionesSeleccionadas.forEach(opcion => {
+                const precioOpcion = parseFloat(opcion.dataset.precio) || 0;
+                precioFinal += precioOpcion;
+                
+                if (precioOpcion > 0) {
+                    opcionesTexto.push(`${opcion.value} (+LPS. ${precioOpcion.toFixed(2)})`);
+                } else {
+                    opcionesTexto.push(opcion.value);
+                }
+            });
+            
+            if (opcionesTexto.length > 0) {
+                nombreCompleto += ` (${opcionesTexto.join(', ')})`;
+            }
+            
+            // Agregar al carrito
+            const subtotal = precioFinal * cantidadModal;
+            
+            carrito.push({
+                id: Date.now() + Math.random(),
+                nombre: nombreCompleto,
+                nombreBase: nombre,
+                precio: precioFinal,
+                cantidad: cantidadModal,
+                subtotal: subtotal,
+                imagen: obtenerImagenProducto(nombre),
+                opciones: opcionesTexto,
+                editable: true
+            });
+            
+            actualizarCarrito();
+            cerrarModalOpciones();
+            mostrarNotificacion(`${nombre} agregado al carrito`);
+            
+            // Resetear cantidad original
+            document.getElementById(quantityId).value = 1;
         }
 
         function agregarAlCarritoDirecto(nombre, precio, cantidad, quantityId) {
@@ -1881,7 +2057,10 @@
                         <div style="flex: 1;">
                             <div class="flex justify-between items-start mb-2">
                                 <h4 style="font-weight: 500; font-size: 0.875rem;">${item.nombre}</h4>
-                                <button onclick="eliminarDelCarrito('${item.id}')" style="color: #dc2626; background: none; border: none; font-size: 1.125rem; cursor: pointer; margin-left: 0.5rem;">×</button>
+                                <div style="display: flex; gap: 0.25rem;">
+                                    ${item.editable ? `<button onclick="editarProductoCarrito('${item.id}')" style="color: #3b82f6; background: none; border: none; font-size: 0.875rem; cursor: pointer;" title="Editar opciones">✏️</button>` : ''}
+                                    <button onclick="eliminarDelCarrito('${item.id}')" style="color: #dc2626; background: none; border: none; font-size: 1.125rem; cursor: pointer;">×</button>
+                                </div>
                             </div>
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center space-x-2">
@@ -1914,6 +2093,21 @@
                 item.subtotal = item.precio * item.cantidad;
                 actualizarCarrito();
             }
+        }
+
+        function editarProductoCarrito(itemId) {
+            const item = carrito.find(producto => producto.id == itemId);
+            if (!item || !item.editable) return;
+            
+            // Eliminar el item actual del carrito
+            carrito = carrito.filter(producto => producto.id != itemId);
+            actualizarCarrito();
+            
+            // Abrir modal de opciones con los datos del producto
+            const nombreBase = item.nombreBase || item.nombre.split(' (')[0];
+            const precioBase = productos.find(p => p.nombre === nombreBase)?.precio_base || item.precio;
+            
+            abrirModalOpciones(nombreBase, parseFloat(precioBase), item.cantidad, 'edit-' + itemId);
         }
 
         function eliminarDelCarrito(itemId) {
@@ -2085,17 +2279,20 @@
                 const urlDelivery = `https://wa.me/${numeroDelivery}?text=${encodeURIComponent(mensaje)}`;
                 window.open(urlDelivery, '_blank');
                 
-                // Enviar al Comercio si está marcado y es diferente al delivery
-                if (notificarComercio && negocioActual && negocioActual.telefono && 
-                    negocioActual.telefono !== deliveryActual.telefono) {
+                // Enviar al Comercio si está marcado
+                if (notificarComercio && negocioActual && negocioActual.telefono) {
                     const mensajeComercio = mensaje.replace('🍕 *NUEVO PEDIDO* 🍕', '🍕 *PEDIDO PARA TU NEGOCIO* 🍕');
                     const numeroComercio = negocioActual.telefono.replace(/\D/g, '');
-                    const urlComercio = `https://wa.me/${numeroComercio}?text=${encodeURIComponent(mensajeComercio)}`;
                     
-                    // Abrir después de un pequeño delay para evitar bloqueo de popups
-                    setTimeout(() => {
-                        window.open(urlComercio, '_blank');
-                    }, 1500);
+                    // Solo enviar si el número es diferente al delivery
+                    if (numeroComercio !== numeroDelivery) {
+                        const urlComercio = `https://wa.me/${numeroComercio}?text=${encodeURIComponent(mensajeComercio)}`;
+                        
+                        // Abrir después de un pequeño delay para evitar bloqueo de popups
+                        setTimeout(() => {
+                            window.open(urlComercio, '_blank');
+                        }, 1500);
+                    }
                 }
                 
                 // Limpiar carrito y cerrar modal después del envío
@@ -2169,6 +2366,9 @@
             if (e.target.id === 'modal-login') {
                 cerrarLogin();
             }
+            if (e.target.id === 'modal-opciones') {
+                cerrarModalOpciones();
+            }
         });
 
         // Inicializar aplicación
@@ -2176,7 +2376,8 @@
             cargarDatosCompletos();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97fe3aeb56f51499',t:'MTc1ODAwMzMzNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97fe70c6229cb4fc',t:'MTc1ODAwNTU0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
 
 
