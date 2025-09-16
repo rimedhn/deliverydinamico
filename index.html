@@ -5,182 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Deliverys</title>
     <link id="favicon" rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            line-height: 1.6;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
+        /* Estilos dinámicos para colores */
+        .header-dynamic {
+            transition: background 0.3s ease;
         }
         
-        /* Header Styles */
-        .header {
-            background: linear-gradient(135deg, #dc2626, #ef4444);
-            color: white;
-            padding: 1rem 0;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        .footer-dynamic {
+            transition: background 0.3s ease;
         }
         
-        .header-desktop {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .header-mobile {
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            .header-desktop { display: none; }
-            .header-mobile { display: block; }
-        }
-        
-        .logo-container {
-            width: 4rem;
-            height: 4rem;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        /* Mobile Navbar */
+        /* Mobile navbar */
         .mobile-navbar {
             position: fixed;
-            top: 1rem;
-            right: 1rem;
+            top: 4px;
+            right: 4px;
             z-index: 1000;
             background: white;
             border-radius: 50px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            padding: 0.5rem;
+            padding: 8px;
             display: flex;
-            gap: 0.5rem;
+            gap: 8px;
         }
         
         .mobile-navbar button {
-            width: 2.5rem;
-            height: 2.5rem;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.875rem;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         
-        /* Button Styles */
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            border: none;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.875rem;
-        }
-        
-        .btn-primary {
-            background-color: #3b82f6;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: #2563eb;
-        }
-        
-        .btn-secondary {
-            background-color: #6b7280;
-            color: white;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #4b5563;
-        }
-        
-        .btn-danger {
-            background-color: #dc2626;
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            background-color: #b91c1c;
-        }
-        
-        /* Grid Layouts */
-        .grid {
-            display: grid;
-            gap: 1.5rem;
-        }
-        
-        .grid-1 { grid-template-columns: repeat(1, 1fr); }
-        .grid-2 { grid-template-columns: repeat(2, 1fr); }
-        .grid-3 { grid-template-columns: repeat(3, 1fr); }
-        .grid-4 { grid-template-columns: repeat(4, 1fr); }
-        
-        @media (max-width: 1024px) {
-            .grid-4 { grid-template-columns: repeat(3, 1fr); }
-        }
-        
-        @media (max-width: 768px) {
-            .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
-        }
-        
-        @media (max-width: 640px) {
-            .grid-2, .grid-3, .grid-4 { grid-template-columns: repeat(1, 1fr); }
-        }
-        
-        /* Card Styles */
-        .card {
-            background: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px);
-        }
-        
-        .card-image {
-            width: 100%;
-            height: 12rem;
-            object-fit: cover;
-        }
-        
-        .card-content {
-            padding: 1rem;
-        }
-        
-        /* Carousel Styles */
+        /* Carrusel mejorado */
         .carousel-container {
             position: relative;
             overflow: hidden;
-            border-radius: 0.75rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
         }
         
@@ -188,26 +62,26 @@
             width: 100%;
             flex-shrink: 0;
             position: relative;
-            padding: 2rem;
-            color: white;
+            height: 200px;
             display: flex;
             align-items: center;
-            min-height: 200px;
+            padding: 2rem;
+            color: white;
         }
         
         .carousel-content {
             display: flex;
             align-items: center;
             width: 100%;
-            gap: 2rem;
+            z-index: 5;
         }
         
         .carousel-image {
             width: 6rem;
             height: 6rem;
-            border-radius: 50%;
+            border-radius: 1rem;
             object-fit: cover;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         
         .carousel-logo {
@@ -220,181 +94,110 @@
             object-fit: cover;
             border: 3px solid rgba(255, 255, 255, 0.5);
             opacity: 0.8;
+            z-index: 10;
         }
         
-        /* Modal Styles */
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        
-        .modal-content {
+        /* Estilos para tarjetas */
+        .card {
             background: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            max-width: 28rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .card-image {
             width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
+            height: 100%;
+            object-fit: cover;
         }
         
-        .modal-header {
-            background: #dc2626;
-            color: white;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .modal-body {
+        .card-content {
             padding: 1.5rem;
         }
         
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 1rem;
+        /* Grid responsivo */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
         }
         
-        .form-label {
-            display: block;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
+        @media (max-width: 640px) {
+            .grid-4 {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
         }
         
-        .form-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
+        /* Botones */
+        .btn {
+            padding: 0.5rem 1rem;
             border-radius: 0.5rem;
-            font-size: 0.875rem;
-            transition: border-color 0.3s ease;
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: #dc2626;
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
-        }
-        
-        /* Breadcrumb Styles */
-        .breadcrumb {
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin-bottom: 1rem;
-        }
-        
-        .breadcrumb a {
-            color: #6b7280;
+            font-weight: 500;
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            border: none;
             cursor: pointer;
-            transition: color 0.3s ease;
+            font-size: 0.875rem;
         }
         
-        .breadcrumb a:hover {
-            color: #dc2626;
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
         }
         
-        /* Category Filter Styles */
-        .category-filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
+        .btn-primary:hover {
+            background-color: #2563eb;
         }
         
+        .btn-danger {
+            background-color: #dc2626;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #b91c1c;
+        }
+        
+        /* Filtros de categorías */
         .category-btn {
             padding: 0.5rem 1rem;
-            border-radius: 50px;
-            border: none;
+            border-radius: 2rem;
+            border: 2px solid #e5e7eb;
+            background: white;
+            color: #6b7280;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 0.875rem;
+        }
+        
+        .category-btn:hover {
+            border-color: #dc2626;
+            color: #dc2626;
         }
         
         .category-btn.active {
             background-color: #dc2626;
+            border-color: #dc2626;
             color: white;
         }
         
-        .category-btn:not(.active) {
-            background-color: #e5e7eb;
-            color: #374151;
+        /* Animaciones */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
-        .category-btn:hover {
-            transform: translateY(-1px);
-        }
-        
-        /* Floating Buttons */
-        .floating-btn {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            width: 3.5rem;
-            height: 3.5rem;
-            border-radius: 50%;
-            border: none;
-            color: white;
-            font-size: 1.25rem;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
-            z-index: 100;
-        }
-        
-        .floating-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .cart-btn {
-            background-color: #dc2626;
-            bottom: 5rem;
-        }
-        
-        .whatsapp-btn {
-            background-color: #16a34a;
-        }
-        
-        /* Utility Classes */
-        .hidden { display: none !important; }
-        .text-center { text-align: center; }
-        .text-left { text-align: left; }
-        .text-right { text-align: right; }
-        .font-bold { font-weight: 700; }
-        .font-semibold { font-weight: 600; }
-        .font-medium { font-weight: 500; }
-        .text-sm { font-size: 0.875rem; }
-        .text-lg { font-size: 1.125rem; }
-        .text-xl { font-size: 1.25rem; }
-        .text-2xl { font-size: 1.5rem; }
-        .text-3xl { font-size: 1.875rem; }
-        .mb-2 { margin-bottom: 0.5rem; }
-        .mb-4 { margin-bottom: 1rem; }
-        .mb-6 { margin-bottom: 1.5rem; }
-        .mb-8 { margin-bottom: 2rem; }
-        .mt-2 { margin-top: 0.5rem; }
-        .mt-4 { margin-top: 1rem; }
-        .p-4 { padding: 1rem; }
-        .px-4 { padding-left: 1rem; padding-right: 1rem; }
-        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-        .flex { display: flex; }
-        .items-center { align-items: center; }
-        .justify-between { justify-content: space-between; }
-        .space-x-2 > * + * { margin-left: 0.5rem; }
-        .space-x-4 > * + * { margin-left: 1rem; }
-        .space-y-4 > * + * { margin-top: 1rem; }
-        
-        /* Loading Animation */
         .loading-spinner {
             border: 3px solid #f3f3f3;
             border-top: 3px solid #dc2626;
@@ -405,12 +208,7 @@
             margin: 0 auto;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Notification */
+        /* Notificaciones */
         .notification {
             position: fixed;
             top: 1rem;
@@ -430,17 +228,82 @@
         .notification.error {
             background-color: #dc2626;
         }
+        
+        /* Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 32rem;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-header {
+            background: #dc2626;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 1rem 1rem 0 0;
+        }
+        
+        /* Formulario */
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+        
+        /* Breadcrumbs */
+        .breadcrumb {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .breadcrumb a {
+            color: #3b82f6;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <!-- Header -->
-    <header class="header">
-        <div class="container">
+    <header id="header-principal" class="header-dynamic bg-gradient-to-r from-red-600 to-red-500 text-white py-4 mb-6 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
             <!-- Desktop/Tablet Layout -->
-            <div class="header-desktop">
+            <div class="hidden md:flex items-center justify-between">
                 <div class="flex items-center space-x-4">
-                    <div id="logo-container-desktop" class="logo-container hidden">
-                        <img id="logo-negocio-desktop" src="" alt="Logo">
+                    <div id="logo-container-desktop" class="w-16 h-16 rounded-full overflow-hidden border-3 border-white border-opacity-30 hidden">
+                        <img id="logo-negocio-desktop" src="" alt="Logo" class="w-full h-full object-cover">
                     </div>
                     <div>
                         <h1 class="text-3xl font-bold" id="header-title-desktop">🚚 Sistema de Deliverys</h1>
@@ -450,23 +313,23 @@
                 
                 <!-- Botones de navegación desktop -->
                 <div class="flex items-center space-x-4">
-                    <button id="btn-compartir-desktop" onclick="compartirEnlace()" class="btn btn-primary hidden">
+                    <button id="btn-compartir-desktop" onclick="compartirEnlace()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors hidden">
                         📤 Compartir
                     </button>
-                    <button id="btn-login-desktop" onclick="mostrarLogin()" class="btn btn-secondary">
+                    <button id="btn-login-desktop" onclick="mostrarLogin()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                         👤 Login
                     </button>
-                    <button id="btn-logout-desktop" onclick="cerrarSesion()" class="btn btn-danger hidden">
+                    <button id="btn-logout-desktop" onclick="cerrarSesion()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors hidden">
                         🚪 Salir
                     </button>
                 </div>
             </div>
 
             <!-- Mobile Layout -->
-            <div class="header-mobile">
+            <div class="md:hidden">
                 <div class="flex items-center space-x-4">
-                    <div id="logo-container-mobile" class="hidden" style="width: 2.5rem; height: 2.5rem;">
-                        <img id="logo-negocio-mobile" src="" alt="Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    <div id="logo-container-mobile" class="w-10 h-10 rounded-full overflow-hidden border-2 border-white border-opacity-30 hidden">
+                        <img id="logo-negocio-mobile" src="" alt="Logo" class="w-full h-full object-cover">
                     </div>
                     <div>
                         <h1 class="text-lg font-bold" id="header-title-mobile">🚚 Sistema de Deliverys</h1>
@@ -476,13 +339,13 @@
                 
                 <!-- Navbar circular móvil -->
                 <div class="mobile-navbar">
-                    <button id="btn-compartir-mobile" onclick="compartirEnlace()" class="hidden" style="background-color: #3b82f6; color: white;">
+                    <button id="btn-compartir-mobile" onclick="compartirEnlace()" class="bg-blue-600 text-white hidden">
                         📤
                     </button>
-                    <button id="btn-login-mobile" onclick="mostrarLogin()" style="background-color: #6b7280; color: white;">
+                    <button id="btn-login-mobile" onclick="mostrarLogin()" class="bg-gray-600 text-white">
                         👤
                     </button>
-                    <button id="btn-logout-mobile" onclick="cerrarSesion()" class="hidden" style="background-color: #dc2626; color: white;">
+                    <button id="btn-logout-mobile" onclick="cerrarSesion()" class="bg-red-600 text-white hidden">
                         🚪
                     </button>
                 </div>
@@ -491,23 +354,41 @@
     </header>
 
     <!-- Modal de Login -->
-    <div id="modal-login" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
+    <div id="modal-login" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-screen overflow-y-auto">
+            <div id="modal-header-login" class="bg-red-600 text-white p-4 flex justify-between items-center">
                 <h3 class="text-lg font-bold">🔐 Iniciar Sesión</h3>
-                <button onclick="cerrarLogin()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">×</button>
+                <button onclick="cerrarLogin()" class="text-white hover:text-gray-200 text-2xl font-bold">&times;</button>
             </div>
-            <div class="modal-body">
+            <div class="p-6">
+                <!-- Información del administrador/delivery/negocio -->
+                <div id="info-contacto-login" class="mb-6 p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3 mb-3">
+                        <div id="logo-login" class="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
+                            <img id="img-logo-login" src="" alt="Logo" class="w-full h-full object-cover hidden">
+                            <div id="placeholder-logo-login" class="w-full h-full flex items-center justify-center text-2xl">🏢</div>
+                        </div>
+                        <div>
+                            <h4 id="nombre-login" class="font-bold text-gray-800">RMPOS</h4>
+                            <p id="slogan-login" class="text-sm text-gray-600">Plataformas personalizadas a tu medida</p>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-600 space-y-1">
+                        <p id="email-login">📧 rmpos.hn@gmail.com</p>
+                        <p id="telefono-login">📞 +50493593126</p>
+                    </div>
+                </div>
+                
                 <div class="space-y-4">
-                    <div class="form-group">
-                        <label class="form-label">Usuario:</label>
-                        <input type="text" id="input-usuario" class="form-input" placeholder="Ingresa tu usuario">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Usuario:</label>
+                        <input type="text" id="input-usuario" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" placeholder="Ingresa tu usuario">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Contraseña:</label>
-                        <input type="password" id="input-clave" class="form-input" placeholder="Ingresa tu contraseña">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Contraseña:</label>
+                        <input type="password" id="input-clave" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" placeholder="Ingresa tu contraseña">
                     </div>
-                    <button onclick="validarLogin()" class="btn btn-danger" style="width: 100%;">
+                    <button onclick="validarLogin()" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
                         Ingresar
                     </button>
                 </div>
@@ -517,99 +398,94 @@
 
     <!-- Pantalla de acceso restringido -->
     <div id="pantalla-acceso-restringido" class="hidden">
-        <div class="container" style="padding-top: 4rem;">
+        <div class="max-w-7xl mx-auto px-4 pt-16">
             <div class="text-center">
-                <div style="font-size: 4rem; margin-bottom: 1rem;">🔒</div>
-                <h2 class="text-2xl font-bold mb-4" style="color: #374151;">Acceso Restringido</h2>
-                <p style="color: #6b7280; margin-bottom: 2rem;">Para acceder al sistema, debes iniciar sesión o usar un enlace directo de delivery/negocio.</p>
-                <button onclick="mostrarLogin()" class="btn btn-primary">
+                <div class="text-6xl mb-4">🔒</div>
+                <h2 class="text-2xl font-bold mb-4 text-gray-800">Acceso Restringido</h2>
+                <p class="text-gray-600 mb-8">Para acceder al sistema, debes iniciar sesión o usar un enlace directo de delivery/negocio.</p>
+                <button onclick="mostrarLogin()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
                     👤 Iniciar Sesión
                 </button>
             </div>
         </div>
     </div>
 
-    <div class="container" id="contenido-principal">
+    <div class="max-w-7xl mx-auto px-4" id="contenido-principal">
         <!-- Vista de Deliverys (Solo Admin) -->
         <div id="vista-deliverys" class="hidden">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-                <h2 class="text-2xl font-bold mb-2 sm:mb-0" style="color: #374151;">🚚 Gestión de Deliverys</h2>
+                <h2 class="text-2xl font-bold mb-2 sm:mb-0 text-gray-800">🚚 Gestión de Deliverys</h2>
             </div>
-            <div id="deliverys-container" class="grid grid-4">
+            <div id="deliverys-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 <!-- Los deliverys se cargarán dinámicamente -->
             </div>
         </div>
 
         <!-- Carrusel de Promociones -->
         <div id="seccion-promociones" class="mb-8">
-            <h2 class="text-2xl font-bold mb-4" style="color: #374151;">🎉 Promociones Especiales</h2>
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">🎉 Promociones Especiales</h2>
             <div class="carousel-container">
-                <div id="carrusel-promociones" class="flex" style="transition: transform 0.5s ease-in-out;">
+                <div id="carrusel-promociones" class="flex transition-transform duration-500 ease-in-out">
                     <!-- Las promociones se cargarán dinámicamente -->
                 </div>
                 
                 <!-- Controles del carrusel -->
-                <button onclick="cambiarSlide(-1)" style="position: absolute; left: 0.5rem; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; width: 2.5rem; height: 2.5rem; border-radius: 50%; cursor: pointer; font-size: 1.25rem;">
+                <button onclick="cambiarSlide(-1)" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl transition-all duration-300">
                     &#8249;
                 </button>
-                <button onclick="cambiarSlide(1)" style="position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; width: 2.5rem; height: 2.5rem; border-radius: 50%; cursor: pointer; font-size: 1.25rem;">
+                <button onclick="cambiarSlide(1)" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl transition-all duration-300">
                     &#8250;
                 </button>
                 
                 <!-- Indicadores -->
-                <div id="carousel-indicators" style="position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem;">
+                <div id="carousel-indicators" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
                     <!-- Los indicadores se generarán dinámicamente -->
                 </div>
             </div>
         </div>
 
-        <!-- Breadcrumb de navegación superior -->
-        <div id="breadcrumb-superior" class="breadcrumb hidden">
-            <!-- Se llenará dinámicamente -->
-        </div>
-
         <!-- Filtros de categorías -->
         <div id="seccion-filtros" class="mb-8">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-                <h2 class="text-xl font-bold mb-2 sm:mb-0" style="color: #374151;">Categorías</h2>
+                <h2 class="text-xl font-bold mb-2 sm:mb-0 text-gray-800">Categorías</h2>
                 <!-- Breadcrumb junto a categorías -->
                 <div id="breadcrumb-categorias" class="breadcrumb hidden">
                     <!-- Se llenará dinámicamente -->
                 </div>
             </div>
-            <div class="category-filters" id="filtros-categorias">
+            <div class="flex flex-wrap gap-3 mb-8" id="filtros-categorias">
                 <!-- Las categorías se cargarán dinámicamente -->
             </div>
         </div>
 
         <!-- Grid de negocios -->
-        <div id="negocios-container">
+        <div id="negocios-container" class="mb-8">
             <!-- Los negocios se cargarán dinámicamente -->
         </div>
 
         <!-- Grid de productos (cuando se selecciona un negocio) -->
-        <div id="productos-container" class="hidden">
+        <div id="productos-container" class="hidden mb-8">
             <!-- Los productos se cargarán dinámicamente organizados por categorías -->
         </div>
 
         <!-- Breadcrumb de navegación inferior -->
-        <div id="breadcrumb-inferior" class="breadcrumb hidden" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e5e7eb;">
+        <div id="breadcrumb-inferior" class="breadcrumb hidden mt-8 pt-8 border-t border-gray-200">
             <!-- Se llenará dinámicamente -->
         </div>
     </div>
 
     <!-- Botones flotantes -->
     <!-- Botón del carrito -->
-    <button id="carrito-flotante" onclick="abrirModal()" class="floating-btn cart-btn hidden">
-        <div style="position: relative;">
-            🛒
-            <span id="contador-carrito" style="position: absolute; top: -0.75rem; right: -0.75rem; background: #fbbf24; color: #000; font-size: 0.75rem; border-radius: 50%; width: 1.25rem; height: 1.25rem; display: flex; align-items: center; justify-content: center; font-weight: bold;">0</span>
+    <button id="carrito-flotante" onclick="abrirModal()" class="fixed bottom-20 right-4 w-14 h-14 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-lg hover:scale-110 transition-all duration-300 z-50 hidden">
+        <div class="relative">
+            <span class="text-xl">🛒</span>
+            <span id="contador-carrito" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
         </div>
     </button>
 
     <!-- Botón de WhatsApp -->
-    <a id="whatsapp-flotante" href="#" target="_blank" class="floating-btn whatsapp-btn">
-        <svg style="width: 1.5rem; height: 1.5rem;" fill="currentColor" viewBox="0 0 24 24">
+    <a id="whatsapp-flotante" href="#" target="_blank" class="fixed bottom-4 right-4 w-14 h-14 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg hover:scale-110 transition-all duration-300 z-50 flex items-center justify-center">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
         </svg>
     </a>
@@ -692,8 +568,8 @@
     </div>
 
     <!-- Footer -->
-    <footer style="background-color: #1f2937; color: white; padding: 2rem 0; margin-top: 3rem;">
-        <div class="container">
+    <footer id="footer-principal" class="footer-dynamic bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-6">
                 <h3 class="text-xl font-bold mb-4">¡Síguenos en nuestras redes sociales!</h3>
                 <div class="flex justify-center space-x-4" id="redes-sociales">
@@ -701,9 +577,9 @@
                 </div>
             </div>
             
-            <div class="text-center" style="border-top: 1px solid #374151; padding-top: 1rem;">
+            <div class="text-center border-t border-gray-700 pt-4">
                 <p>&copy; 2024 Sistema de Deliverys. Todos los derechos reservados.</p>
-                <p style="color: #9ca3af; margin-top: 0.5rem;" id="footer-contacto">
+                <p class="text-gray-400 mt-2" id="footer-contacto">
                     📞 Teléfono: (504) 2234-5678 | 📧 Email: info@deliverys.com
                 </p>
             </div>
@@ -781,9 +657,15 @@
                 
                 // Obtener datos del administrador del sistema
                 datosAdmin = usuarios.find(u => u.tipo === 'Admin') || {
-                    nombre_completo: 'Administrador del Sistema',
-                    telefono: '+50412345678',
-                    email: 'admin@deliverys.com'
+                    nombre_completo: 'RMPOS',
+                    nombre: 'RMPOS',
+                    slogan: 'Plataformas personalizadas a tu medida',
+                    telefono: '+50493593126',
+                    email: 'rmpos.hn@gmail.com',
+                    logo_url: 'https://github.com/rimedhn/rmpos/blob/main/LOGO%20RMPOS.jpg?raw=true',
+                    facebook_url: 'https://www.facebook.com/profile.php?id=',
+                    instagram_url: 'https://www.instagram.com/rmposhn/',
+                    tiktok_url: 'https://www.tiktok.com/@rimeddigital'
                 };
                 
                 // Procesar parámetros de URL
@@ -825,6 +707,8 @@
                         if (negocioActual) {
                             vistaActual = 'productos';
                         }
+                    } else {
+                        vistaActual = 'negocios';
                     }
                     return true; // Acceso permitido con enlace directo
                 }
@@ -922,33 +806,33 @@
         // Crear tarjeta de delivery
         function crearTarjetaDelivery(delivery) {
             const card = document.createElement('div');
-            card.className = 'card';
+            card.className = 'bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden';
             
             card.innerHTML = `
-                <div style="position: relative; height: 12rem;">
+                <div class="relative h-48">
                     ${delivery.imagen_url ? 
-                        `<img src="${delivery.imagen_url}" alt="${delivery.nombre}" class="card-image">` :
-                        `<div style="width: 100%; height: 100%; background: linear-gradient(135deg, #ef4444, #dc2626); display: flex; align-items: center; justify-content: center;">
+                        `<img src="${delivery.imagen_url}" alt="${delivery.nombre}" class="w-full h-full object-cover">` :
+                        `<div class="w-full h-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
                             <div class="text-center text-white">
-                                <div style="font-size: 4rem; margin-bottom: 0.5rem;">🚚</div>
+                                <div class="text-6xl mb-2">🚚</div>
                                 <div class="text-lg font-semibold">${delivery.nombre}</div>
                             </div>
                         </div>`
                     }
                     ${delivery.logo_url ? 
-                        `<div style="position: absolute; top: 0.5rem; left: 0.5rem;">
-                            <img src="${delivery.logo_url}" alt="Logo ${delivery.nombre}" style="width: 3rem; height: 3rem; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        `<div class="absolute top-2 left-2">
+                            <img src="${delivery.logo_url}" alt="Logo ${delivery.nombre}" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md">
                         </div>` : ''
                     }
                 </div>
-                <div class="card-content">
-                    <h3 class="text-xl font-bold mb-2" style="color: #374151;">${delivery.nombre}</h3>
-                    <p style="color: #6b7280; margin-bottom: 1rem;">${delivery.descripcion || delivery.slogan || 'Delivery de comida'}</p>
+                <div class="p-4">
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">${delivery.nombre}</h3>
+                    <p class="text-gray-600 mb-4">${delivery.descripcion || delivery.slogan || 'Delivery de comida'}</p>
                     <div class="flex justify-between items-center">
-                        <button onclick="verNegociosDelivery(${delivery.id})" class="btn btn-danger">
+                        <button onclick="verNegociosDelivery(${delivery.id})" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                             Ver Negocios
                         </button>
-                        <button onclick="compartirDelivery(${delivery.id})" class="btn btn-primary">
+                        <button onclick="compartirDelivery(${delivery.id})" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                             📤 Compartir
                         </button>
                     </div>
@@ -986,8 +870,10 @@
             document.getElementById('negocios-container').classList.remove('hidden');
             document.getElementById('productos-container').classList.add('hidden');
             
-            // Filtrar datos del delivery actual
-            const negociosDelivery = negocios.filter(n => n.delivery_id == deliveryActual.id);
+            // Filtrar y ordenar datos del delivery actual por prioridad
+            const negociosDelivery = negocios
+                .filter(n => n.delivery_id == deliveryActual.id)
+                .sort((a, b) => (parseInt(a.prioridad) || 999) - (parseInt(b.prioridad) || 999));
             const promocionesDelivery = promociones.filter(p => 
                 p.delivery_id == deliveryActual.id || 
                 negociosDelivery.some(n => n.id == p.negocio_id)
@@ -1065,12 +951,19 @@
             document.getElementById('header-title-mobile').textContent = titulo;
             document.getElementById('header-slogan-mobile').textContent = slogan;
             
-            // Actualizar logo si existe
+            // Actualizar logo y colores dinámicos
             let logoUrl = null;
+            let entidadActual = null;
+            
             if (negocioActual && negocioActual.logo_url) {
                 logoUrl = negocioActual.logo_url;
+                entidadActual = negocioActual;
             } else if (deliveryActual && deliveryActual.logo_url) {
                 logoUrl = deliveryActual.logo_url;
+                entidadActual = deliveryActual;
+            } else if (datosAdmin && datosAdmin.logo_url) {
+                logoUrl = datosAdmin.logo_url;
+                entidadActual = datosAdmin;
             }
             
             const logoContainerDesktop = document.getElementById('logo-container-desktop');
@@ -1091,10 +984,40 @@
                 
                 logoContainerDesktop.classList.remove('hidden');
                 logoContainerMobile.classList.remove('hidden');
+                
+                // Actualizar colores dinámicos basados en el logo
+                actualizarColoresDinamicos(entidadActual);
             } else {
                 logoContainerDesktop.classList.add('hidden');
                 logoContainerMobile.classList.add('hidden');
+                
+                // Usar colores por defecto
+                actualizarColoresDinamicos(datosAdmin);
             }
+        }
+        
+        // Actualizar colores dinámicos del header y footer
+        function actualizarColoresDinamicos(entidad) {
+            const header = document.getElementById('header-principal');
+            const footer = document.getElementById('footer-principal');
+            const modalHeader = document.getElementById('modal-header-login');
+            
+            // Colores por defecto (RMPOS)
+            let colorPrimario = 'from-red-600 to-red-500';
+            let colorFooter = 'bg-gray-800';
+            
+            // Si la entidad tiene colores personalizados, usarlos
+            if (entidad && entidad.color_primario) {
+                colorPrimario = `from-${entidad.color_primario}-600 to-${entidad.color_primario}-500`;
+            }
+            if (entidad && entidad.color_secundario) {
+                colorFooter = `bg-${entidad.color_secundario}-800`;
+            }
+            
+            // Aplicar colores
+            header.className = `header-dynamic bg-gradient-to-r ${colorPrimario} text-white py-4 mb-6 shadow-lg`;
+            footer.className = `footer-dynamic ${colorFooter} text-white py-8 mt-12`;
+            modalHeader.className = `bg-red-600 text-white p-4 flex justify-between items-center`;
         }
         
         // Actualizar breadcrumbs
@@ -1570,8 +1493,52 @@
         
         // Funciones de autenticación
         function mostrarLogin() {
+            // Actualizar información del modal según el contexto
+            actualizarInfoModalLogin();
             document.getElementById('modal-login').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+        }
+        
+        // Actualizar información del modal de login
+        function actualizarInfoModalLogin() {
+            let entidadInfo = datosAdmin; // Por defecto RMPOS
+            
+            // Determinar qué información mostrar según el contexto
+            if (negocioActual) {
+                entidadInfo = negocioActual;
+            } else if (deliveryActual) {
+                entidadInfo = deliveryActual;
+            }
+            
+            // Actualizar elementos del modal
+            const nombreLogin = document.getElementById('nombre-login');
+            const sloganLogin = document.getElementById('slogan-login');
+            const emailLogin = document.getElementById('email-login');
+            const telefonoLogin = document.getElementById('telefono-login');
+            const imgLogoLogin = document.getElementById('img-logo-login');
+            const placeholderLogoLogin = document.getElementById('placeholder-logo-login');
+            
+            nombreLogin.textContent = entidadInfo.nombre_completo || entidadInfo.nombre || 'RMPOS';
+            sloganLogin.textContent = entidadInfo.slogan || entidadInfo.descripcion || 'Plataformas personalizadas a tu medida';
+            emailLogin.textContent = `📧 ${entidadInfo.email || 'rmpos.hn@gmail.com'}`;
+            telefonoLogin.textContent = `📞 ${entidadInfo.telefono || '+50493593126'}`;
+            
+            // Actualizar logo
+            if (entidadInfo.logo_url) {
+                imgLogoLogin.src = entidadInfo.logo_url;
+                imgLogoLogin.classList.remove('hidden');
+                placeholderLogoLogin.classList.add('hidden');
+                
+                imgLogoLogin.onerror = function() {
+                    imgLogoLogin.classList.add('hidden');
+                    placeholderLogoLogin.classList.remove('hidden');
+                    placeholderLogoLogin.textContent = entidadInfo.nombre ? entidadInfo.nombre.charAt(0) : '🏢';
+                };
+            } else {
+                imgLogoLogin.classList.add('hidden');
+                placeholderLogoLogin.classList.remove('hidden');
+                placeholderLogoLogin.textContent = entidadInfo.nombre ? entidadInfo.nombre.charAt(0) : '🏢';
+            }
         }
         
         function cerrarLogin() {
@@ -2071,18 +2038,27 @@
                 const numeroDelivery = deliveryActual.telefono.replace(/\D/g, '');
                 const urlDelivery = `https://wa.me/${numeroDelivery}?text=${encodeURIComponent(mensaje)}`;
                 window.open(urlDelivery, '_blank');
-            }
-            
-            // Enviar al Comercio si está marcado
-            if (notificarComercio && negocioActual && negocioActual.telefono) {
-                const mensajeComercio = mensaje.replace('🍕 *NUEVO PEDIDO* 🍕', '🍕 *PEDIDO PARA TU NEGOCIO* 🍕');
-                const numeroComercio = negocioActual.telefono.replace(/\D/g, '');
-                const urlComercio = `https://wa.me/${numeroComercio}?text=${encodeURIComponent(mensajeComercio)}`;
                 
-                // Abrir después de un pequeño delay para evitar bloqueo de popups
+                // Enviar al Comercio si está marcado y es diferente al delivery
+                if (notificarComercio && negocioActual && negocioActual.telefono && 
+                    negocioActual.telefono !== deliveryActual.telefono) {
+                    const mensajeComercio = mensaje.replace('🍕 *NUEVO PEDIDO* 🍕', '🍕 *PEDIDO PARA TU NEGOCIO* 🍕');
+                    const numeroComercio = negocioActual.telefono.replace(/\D/g, '');
+                    const urlComercio = `https://wa.me/${numeroComercio}?text=${encodeURIComponent(mensajeComercio)}`;
+                    
+                    // Abrir después de un pequeño delay para evitar bloqueo de popups
+                    setTimeout(() => {
+                        window.open(urlComercio, '_blank');
+                    }, 1500);
+                }
+                
+                // Limpiar carrito y cerrar modal después del envío
                 setTimeout(() => {
-                    window.open(urlComercio, '_blank');
-                }, 1000);
+                    vaciarCarrito();
+                    mostrarNotificacion('¡Pedido enviado exitosamente!');
+                }, 2000);
+            } else {
+                alert('No se pudo enviar el pedido. Teléfono no disponible.');
             }
         }
         
@@ -2154,5 +2130,6 @@
             cargarDatosCompletos();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97fdb7d595da5ea7',t:'MTc1Nzk5Nzk2NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97fdfee2c1fe139c',t:'MTc1ODAwMDg3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
