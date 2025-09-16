@@ -1939,7 +1939,7 @@
                             <input type="${inputType}" name="${inputName}" value="${opcion.nombre}" 
                                    data-precio="${opcion.precio}" id="${inputId}" ${defaultChecked}
                                    style="margin-right: 0.75rem;" 
-                                   onchange="actualizarPrecioModal('${nombre}', ${precioBase}, ${cantidad})">
+                                   onchange="actualizarPrecioModal('${nombre}', ${precioBase})">
                             <div style="flex: 1;">
                                 <span style="font-weight: 500;">${opcion.nombre}</span>
                                 ${opcion.precio > 0 ? `<span style="color: #16a34a; font-weight: 600; margin-left: 0.5rem;">+LPS. ${opcion.precio.toFixed(2)}</span>` : ''}
@@ -1961,6 +1961,12 @@
                         <button onclick="cerrarModalOpciones()" class="text-white hover:text-gray-200 text-2xl font-bold">&times;</button>
                     </div>
                     <div style="padding: 1.5rem; max-height: 60vh; overflow-y: auto;">
+                        <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f3f4f6; border-radius: 0.5rem;">
+                            <div class="flex justify-between items-center">
+                                <span style="font-weight: 600; color: #374151;">Precio base:</span>
+                                <span style="font-weight: 600; color: #dc2626;">LPS. ${precioBase.toFixed(2)}</span>
+                            </div>
+                        </div>
                         ${opcionesHTML}
                         <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
                             <div class="flex justify-between items-center mb-4">
@@ -1988,6 +1994,11 @@
             
             document.body.appendChild(modal);
             document.body.style.overflow = 'hidden';
+            
+            // Calcular precio inicial con opciones por defecto seleccionadas
+            setTimeout(() => {
+                actualizarPrecioModal(nombre, precioBase);
+            }, 100);
         }
         
         function validarOpcionesObligatorias(nombre) {
@@ -2015,7 +2026,7 @@
             }
         }
         
-        function actualizarPrecioModal(nombre, precioBase, cantidadInicial) {
+        function actualizarPrecioModal(nombre, precioBase) {
             const cantidadActual = parseInt(document.getElementById('cantidad-modal').textContent);
             let precioTotal = precioBase * cantidadActual;
             
@@ -2035,13 +2046,16 @@
             if (cantidad < 1) cantidad = 1;
             cantidadElement.textContent = cantidad;
             
-            // Actualizar precio
+            // Actualizar precio - obtener precio base del producto original
             const modal = document.getElementById('modal-opciones');
             const titulo = modal.querySelector('.modal-header h3').textContent;
             const nombre = titulo.split('Personalizar: ')[1];
-            const precioBase = parseFloat(document.getElementById('precio-total-modal').textContent.split('LPS. ')[1]) / parseInt(cantidadElement.textContent);
             
-            actualizarPrecioModal(nombre, precioBase, cantidad);
+            // Buscar el precio base original del producto
+            const producto = productos.find(p => p.nombre === nombre);
+            const precioBase = producto ? parseFloat(producto.precio_base) : 0;
+            
+            actualizarPrecioModal(nombre, precioBase);
         }
         
         function confirmarOpcionesYAgregar(nombre, precioBase, quantityId) {
@@ -2495,5 +2509,6 @@
             cargarDatosCompletos();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97fee8b483dab4fc',t:'MTc1ODAxMDQ1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97ff02a0a511dc77',t:'MTc1ODAxMTUxNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
