@@ -62,7 +62,7 @@
             width: 100%;
             flex-shrink: 0;
             position: relative;
-            height: 200px;
+            height: 240px;
             display: flex;
             align-items: center;
             padding: 2rem;
@@ -655,8 +655,8 @@
                 tiposOpciones = (tiposOpcionesData || []).filter(item => item.estado === 'Activo');
                 usuarios = (usuariosData || []).filter(item => item.estado === 'Activo');
                 
-                // Obtener datos del administrador del sistema
-                datosAdmin = usuarios.find(u => u.tipo === 'Admin') || {
+                // Obtener datos del administrador del sistema (siempre usar datos de RMPOS)
+                datosAdmin = {
                     nombre_completo: 'RMPOS',
                     nombre: 'RMPOS',
                     slogan: 'Plataformas personalizadas a tu medida',
@@ -688,7 +688,10 @@
                 
             } catch (error) {
                 console.error('Error cargando datos:', error);
-                mostrarError('Error al cargar los datos. Por favor, recarga la página.');
+                // Solo mostrar error si realmente no se cargaron datos
+                if (!deliverys.length && !negocios.length) {
+                    mostrarError('Error al cargar los datos. Por favor, recarga la página.');
+                }
                 mostrarCargando(false);
             }
         }
@@ -771,12 +774,14 @@
                 
                 renderizarDeliverys();
                 actualizarFooterContacto(datosAdmin, datosAdmin.telefono);
+                actualizarWhatsAppFlotante(datosAdmin.telefono);
             } else if (usuarioActual.tipo === 'Delivery') {
                 // Delivery ve sus negocios
                 deliveryActual = deliverys.find(d => d.id == usuarioActual.delivery_id);
                 if (deliveryActual) {
                     renderizarNegociosDelivery();
-                    actualizarFooterContacto(datosAdmin, datosAdmin.telefono);
+                    actualizarFooterContacto(deliveryActual, deliveryActual.telefono);
+                    actualizarWhatsAppFlotante(deliveryActual.telefono);
                 }
             } else if (usuarioActual.tipo === 'Comercio') {
                 // Comercio ve su menú
@@ -784,7 +789,8 @@
                 if (negocioActual) {
                     deliveryActual = deliverys.find(d => d.id == negocioActual.delivery_id);
                     renderizarMenuNegocio();
-                    actualizarFooterContacto(deliveryActual, deliveryActual.telefono);
+                    actualizarFooterContacto(negocioActual, negocioActual.telefono);
+                    actualizarWhatsAppFlotante(deliveryActual.telefono);
                 }
             }
         }
@@ -799,7 +805,8 @@
                 container.appendChild(deliveryCard);
             });
             
-            actualizarHeader('🚚 Panel de Administración', 'Gestión de todos los deliverys');
+            // Actualizar header con datos de RMPOS para admin
+            actualizarHeader(datosAdmin.nombre, datosAdmin.slogan);
             actualizarBreadcrumbs();
         }
         
@@ -1022,20 +1029,19 @@
         
         // Actualizar breadcrumbs
         function actualizarBreadcrumbs() {
-            const breadcrumbSuperior = document.getElementById('breadcrumb-superior');
             const breadcrumbCategorias = document.getElementById('breadcrumb-categorias');
             const breadcrumbInferior = document.getElementById('breadcrumb-inferior');
             
             let breadcrumbHTML = '';
             
             if (usuarioActual && usuarioActual.tipo === 'Admin') {
-                breadcrumbHTML += '<a onclick="volverADeliverys()">🏠 Deliverys</a>';
+                breadcrumbHTML += '<a onclick="volverADeliverys()" style="cursor: pointer;">🏠 Panel Admin</a>';
                 if (deliveryActual) {
-                    breadcrumbHTML += ` > <a onclick="verNegociosDelivery(${deliveryActual.id})">${deliveryActual.nombre}</a>`;
+                    breadcrumbHTML += ` > <a onclick="verNegociosDelivery(${deliveryActual.id})" style="cursor: pointer;">${deliveryActual.nombre}</a>`;
                 }
             } else {
                 if (deliveryActual) {
-                    breadcrumbHTML += `<a onclick="volverANegocios()">🏠 ${deliveryActual.nombre}</a>`;
+                    breadcrumbHTML += `<a onclick="volverANegocios()" style="cursor: pointer;">🏠 ${deliveryActual.nombre}</a>`;
                 }
             }
             
@@ -1044,17 +1050,17 @@
             }
             
             if (breadcrumbHTML) {
-                breadcrumbSuperior.innerHTML = breadcrumbHTML;
-                breadcrumbCategorias.innerHTML = breadcrumbHTML;
-                breadcrumbInferior.innerHTML = breadcrumbHTML;
-                
-                breadcrumbSuperior.classList.remove('hidden');
-                breadcrumbCategorias.classList.remove('hidden');
-                breadcrumbInferior.classList.remove('hidden');
+                if (breadcrumbCategorias) {
+                    breadcrumbCategorias.innerHTML = breadcrumbHTML;
+                    breadcrumbCategorias.classList.remove('hidden');
+                }
+                if (breadcrumbInferior) {
+                    breadcrumbInferior.innerHTML = breadcrumbHTML;
+                    breadcrumbInferior.classList.remove('hidden');
+                }
             } else {
-                breadcrumbSuperior.classList.add('hidden');
-                breadcrumbCategorias.classList.add('hidden');
-                breadcrumbInferior.classList.add('hidden');
+                if (breadcrumbCategorias) breadcrumbCategorias.classList.add('hidden');
+                if (breadcrumbInferior) breadcrumbInferior.classList.add('hidden');
             }
         }
         
@@ -1080,9 +1086,15 @@
         // Mostrar botones compartir
         function mostrarBotonesCompartir() {
             // Desktop
-            document.getElementById('btn-compartir-desktop').classList.remove('hidden');
+            const btnCompartirDesktop = document.getElementById('btn-compartir-desktop');
+            if (btnCompartirDesktop) {
+                btnCompartirDesktop.classList.remove('hidden');
+            }
             // Mobile
-            document.getElementById('btn-compartir-mobile').classList.remove('hidden');
+            const btnCompartirMobile = document.getElementById('btn-compartir-mobile');
+            if (btnCompartirMobile) {
+                btnCompartirMobile.classList.remove('hidden');
+            }
         }
         
         // Ocultar botones compartir
@@ -1484,7 +1496,30 @@
                     }
                 });
                 
-                // Si no hay redes sociales, mostrar mensaje por defecto
+                // Si no hay redes sociales, mostrar las de RMPOS por defecto
+                if (redesSociales.children.length === 0 && datosAdmin) {
+                    const redesDefault = [
+                        { nombre: 'Facebook', icono: '📘', url: datosAdmin.facebook_url },
+                        { nombre: 'Instagram', icono: '📷', url: datosAdmin.instagram_url },
+                        { nombre: 'TikTok', icono: '🎵', url: datosAdmin.tiktok_url }
+                    ];
+                    
+                    redesDefault.forEach(red => {
+                        if (red.url) {
+                            const enlace = document.createElement('a');
+                            enlace.href = red.url;
+                            enlace.target = '_blank';
+                            enlace.style.cssText = 'color: white; text-decoration: none; font-size: 1.5rem; transition: transform 0.3s ease; margin: 0 0.5rem;';
+                            enlace.innerHTML = red.icono;
+                            enlace.title = red.nombre;
+                            enlace.onmouseover = function() { this.style.transform = 'scale(1.2)'; };
+                            enlace.onmouseout = function() { this.style.transform = 'scale(1)'; };
+                            redesSociales.appendChild(enlace);
+                        }
+                    });
+                }
+                
+                // Si aún no hay redes, mostrar mensaje por defecto
                 if (redesSociales.children.length === 0) {
                     redesSociales.innerHTML = '<span style="color: #9ca3af;">Síguenos en nuestras redes sociales</span>';
                 }
@@ -1557,7 +1592,14 @@
                 return;
             }
             
-            const usuarioEncontrado = usuarios.find(u => u.usuario === usuario && u.clave === clave);
+            // Validar usuario con todos los campos requeridos
+            const usuarioEncontrado = usuarios.find(u => 
+                u.usuario === usuario && 
+                u.clave === clave && 
+                u.estado === 'Activo' &&
+                u.tipo && 
+                (u.tipo === 'Admin' || (u.tipo === 'Delivery' && u.delivery_id) || (u.tipo === 'Comercio' && u.negocio_id))
+            );
             
             if (usuarioEncontrado) {
                 usuarioActual = usuarioEncontrado;
@@ -1571,12 +1613,15 @@
                 document.getElementById('btn-login-mobile').classList.add('hidden');
                 document.getElementById('btn-logout-mobile').classList.remove('hidden');
                 
+                // Ocultar pantalla de acceso restringido si estaba visible
+                ocultarPantallaAccesoRestringido();
+                
                 // Renderizar según tipo de usuario
                 renderizarPanelAdmin();
                 
                 mostrarNotificacion(`Bienvenido ${usuarioActual.nombre_completo || usuarioActual.usuario}`);
             } else {
-                alert('Usuario o contraseña incorrectos');
+                alert('Usuario o contraseña incorrectos, o cuenta inactiva');
             }
         }
         
@@ -1669,9 +1714,10 @@
         // Actualizar WhatsApp flotante
         function actualizarWhatsAppFlotante(telefono) {
             const whatsappBtn = document.getElementById('whatsapp-flotante');
-            if (telefono) {
+            if (whatsappBtn && telefono) {
                 const numeroLimpio = telefono.replace(/\D/g, '');
-                whatsappBtn.href = `https://wa.me/${numeroLimpio}?text=¡Hola! Me gustaría hacer un pedido`;
+                const mensaje = encodeURIComponent('¡Hola! Me gustaría hacer un pedido');
+                whatsappBtn.href = `https://wa.me/${numeroLimpio}?text=${mensaje}`;
             }
         }
         
@@ -2130,6 +2176,7 @@
             cargarDatosCompletos();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97fdfee2c1fe139c',t:'MTc1ODAwMDg3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97fe3aeb56f51499',t:'MTc1ODAwMzMzNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
 
